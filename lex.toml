@@ -1,12 +1,11 @@
 [package]
 name        = "lex-pack-coldchain"
 version     = "0.1.0"
-description = "Cold-chain domain pack — temperature-envelope declarations, reefer readings, and excursion attribution over lex-pack-custody's chain of custody."
+description = "Cold-chain domain pack — temperature-envelope declarations, reefer readings, and evidence-gated excursion pricing attributed to whoever held custody. Shares its custody data at the DATA level (the `events` table) with lex-pack-custody, not a code import."
 
 [dependencies]
-lex-soft        = { git = "https://github.com/alpibrusl/lex-soft" }
-lex-pack-custody = { git = "https://github.com/alpibrusl/lex-pack-custody" }
-lex-trail       = { git = "https://github.com/alpibrusl/lex-trail" }
-lex-web         = { git = "https://github.com/alpibrusl/lex-web" }
-lex-schema      = { git = "https://github.com/alpibrusl/lex-schema" }
-lex-log         = { git = "https://github.com/alpibrusl/lex-log" }
+lex-soft   = { git = "https://github.com/alpibrusl/lex-soft" }
+lex-trail  = { git = "https://github.com/alpibrusl/lex-trail" }
+lex-web    = { git = "https://github.com/alpibrusl/lex-web" }
+lex-schema = { git = "https://github.com/alpibrusl/lex-schema" }
+lex-money  = { git = "https://github.com/alpibrusl/lex-money" }
