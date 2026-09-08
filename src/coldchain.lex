@@ -319,7 +319,7 @@ fn sync_from_telemetry(db :: Db, telemetry_url :: Str, trailer_ref :: Str, p :: 
 # double-settle), so it must surface as an error, not a silent 201.
 fn mount(r :: router.Router, db :: Db, telemetry_url :: Str) -> [sql] router.Router {
   let __t := ensure_tables(db)
-  let with_profiles := router.route_effectful(r, "POST", "/coldchain/profiles", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_profiles := router.route_effectful(r, "POST", "/coldchain/profiles", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     match jv.parse(c.body) {
       Err(_) => resp.bad_request("{\"error\":\"invalid json\"}"),
       Ok(j) => {
@@ -345,7 +345,7 @@ fn mount(r :: router.Router, db :: Db, telemetry_url :: Str) -> [sql] router.Rou
       },
     }
   })
-  let with_readings := router.route_effectful(with_profiles, "POST", "/coldchain/readings", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_readings := router.route_effectful(with_profiles, "POST", "/coldchain/readings", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     match jv.parse(c.body) {
       Err(_) => resp.bad_request("{\"error\":\"invalid json\"}"),
       Ok(j) => {
@@ -370,7 +370,7 @@ fn mount(r :: router.Router, db :: Db, telemetry_url :: Str) -> [sql] router.Rou
       },
     }
   })
-  let with_sync := router.route_effectful(with_readings, "POST", "/coldchain/trailers/:ref/sync", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_sync := router.route_effectful(with_readings, "POST", "/coldchain/trailers/:ref/sync", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     let ref := match ctx.path_param(c, "ref") {
       Some(s) => s,
       None => "",
@@ -395,7 +395,7 @@ fn mount(r :: router.Router, db :: Db, telemetry_url :: Str) -> [sql] router.Rou
       }
     }
   })
-  let with_report := router.route_effectful(with_sync, "GET", "/coldchain/trailers/:ref/report", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_report := router.route_effectful(with_sync, "GET", "/coldchain/trailers/:ref/report", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     let ref := match ctx.path_param(c, "ref") {
       Some(s) => s,
       None => "",
@@ -441,7 +441,7 @@ fn mount(r :: router.Router, db :: Db, telemetry_url :: Str) -> [sql] router.Rou
       },
     }
   })
-  let with_agreements := router.route_effectful(with_report, "POST", "/coldchain/agreements", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_agreements := router.route_effectful(with_report, "POST", "/coldchain/agreements", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     match jv.parse(c.body) {
       Err(_) => resp.bad_request("{\"error\":\"invalid json\"}"),
       Ok(j) => {
@@ -469,7 +469,7 @@ fn mount(r :: router.Router, db :: Db, telemetry_url :: Str) -> [sql] router.Rou
       },
     }
   })
-  let with_invoice := router.route_effectful(with_agreements, "GET", "/coldchain/shipments/:ref/invoice", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  let with_invoice := router.route_effectful(with_agreements, "GET", "/coldchain/shipments/:ref/invoice", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     let ref := match ctx.path_param(c, "ref") {
       Some(s) => s,
       None => "",
@@ -484,7 +484,7 @@ fn mount(r :: router.Router, db :: Db, telemetry_url :: Str) -> [sql] router.Rou
       },
     }
   })
-  router.route_effectful(with_invoice, "POST", "/coldchain/shipments/:ref/settle", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc] resp.Response {
+  router.route_effectful(with_invoice, "POST", "/coldchain/shipments/:ref/settle", fn (c :: ctx.Ctx) -> [io, time, crypto, random, sql, fs_read, fs_write, net, concurrent, llm, proc, approval] resp.Response {
     let ref := match ctx.path_param(c, "ref") {
       Some(s) => s,
       None => "",
